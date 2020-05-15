@@ -50,6 +50,7 @@ def check_model (filename):
     import os
     import struct
     import sys
+    import h5py
 
     [int4f,intf,flf]=check_types()
     try:
@@ -60,6 +61,16 @@ def check_model (filename):
     filetype='unknown'
     # Check if it's nicole's binary format
     f.close()
+    if h5py.is_hdf5(filename):
+        hf = h5py.File(filename, 'r')
+        return_data = [
+            'hdf5',
+            hf['x'][()].size,
+            hf['y'][()].size,
+            hf['z'][()].size
+        ]
+        hf.close()
+        return return_data
     f=open(filename,'rb')
     header=f.read(16+4+4+8)
     [string,ny,nz]=struct.unpack('<16s'+intf+intf,header)
@@ -403,6 +414,7 @@ def read_model(filename, filetype, nx, ny, nz, ix, iy, sequential=0):
     import struct
     import re
     import sys
+    import h5py
     global idl, irec, f # Save values between calls
 
     [int4f,intf,flf]=check_types()
@@ -843,6 +855,41 @@ def read_model(filename, filetype, nx, ny, nz, ix, iy, sequential=0):
 #        except:
 #            data.append( 0. )
         for i in range(len(data)): data[i]=float(data[i])
+        return data
+    elif filetype == 'hdf5':
+        # Rh15d keywords and as is extra keep_xxx
+        depth_keywords = [
+            'z', 'tau', 'temperature',
+            'gas_pressure', 'density',
+            'electron_pressure', 'velocity_z',
+            'velocity_turbulent', 'B_z', 'B_x',
+            'B_y', 'B_local_x', 'B_local_y', 'B_local_z',
+            'velocity_local_x', 'velocity_local_y',
+            'velocity_local_z', 'hydrogen_populations',
+            'nHminus', 'nHplus', 'nH2', 'nH2plus'
+        ]
+        non_depth_keywords = [
+            'velocity_macroturbulent', 'straylight_fraction',
+            'expansion', 'keep_electron_pressure',
+            'keep_gas_pressure', 'keep_density',
+            'keep_hydrogen_populations',
+            'keep_nHminus', 'keep_nHplus', 'keep_nH2',
+            'keep_nH2plus'
+        ]
+        data = list()
+        hf = h5py.File(filename, 'r')
+        for keyword in depth_keywords:
+            try:
+                data += list(float(hf[keyword][()][ix][iy]))
+            except Exception:
+                data += list(float(np.zeros(shape=(nz, ))))
+
+        for keyword in non_depth_keywords:
+            try:
+                data.append(float(hf[keyword][()][ix][iy]))
+            except:
+                data.append(float(0))
+        hf.close()
         return data
     else:
         print 'Unknown model file type:'+filetype
