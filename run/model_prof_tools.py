@@ -180,6 +180,7 @@ def check_prof (filename):
     import string
     import struct
     import sys
+    import h5py
 
     [int4f,intf,flf]=check_types()
     try:
@@ -188,6 +189,18 @@ def check_prof (filename):
         print 'Could not find profile file:',filename
         return ['inexistent',-1,-1,-1]
     filetype='unknown'
+    if h5py.is_hdf5(filename):
+        #RH15D format output HDF5 file
+        hf = h5py.File(filename, 'r')
+        return_data = [
+            'hdf5',
+            hf['x'][()].size,
+            hf['y'][()].size,
+            hf['wavelength'][()].size,
+        ]
+        hf.close()
+        return return_data
+
     # First check if it's ASCII    
     readstr=f.read(1000000)
     f.close()
@@ -291,6 +304,7 @@ def read_prof(filename, filetype, nx, ny, nlam, ix, iy, sequential=0):
     import struct
     import re
     import sys
+    import h5py
     global idl, irec, f, lastfilename # Save values between calls
 
     [int4f,intf,flf]=check_types()
@@ -363,6 +377,16 @@ def read_prof(filename, filetype, nx, ny, nlam, ix, iy, sequential=0):
             data.append(idl.stku[ilam,iy,ix])
             data.append(idl.stkv[ilam,iy,ix])
         for i in range(len(data)): data[i]=float(data[i])
+        return data
+    elif filetype == 'hdf5':
+        data = list()
+        hf = h5py.File(filename, 'r')
+        for index, wave in enumerate(hf['wavelength'][()]):
+            data.append(float(hf['intensity'][ix][iy][index]))
+            data.append(float(hf['stokes_Q'][ix][iy][index]))
+            data.append(float(hf['stokes_U'][ix][iy][index]))
+            data.append(float(hf['stokes_V'][ix][iy][index]))
+        hf.close()
         return data
     else:
         print 'Unknown profile file type:'+filetype
