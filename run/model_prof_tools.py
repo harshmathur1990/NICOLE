@@ -880,7 +880,10 @@ def read_model(filename, filetype, nx, ny, nz, ix, iy, sequential=0):
         hf = h5py.File(filename, 'r')
         for keyword in depth_keywords:
             try:
-                data += list(float(hf[keyword][()][ix][iy]))
+                if keyword in ['z', 'tau']:
+                    data += list(float(hf[keyword][()]))
+                else:
+                    data += list(float(hf[keyword][()][ix][iy]))
             except Exception:
                 data += list(float(np.zeros(shape=(nz, ))))
 
