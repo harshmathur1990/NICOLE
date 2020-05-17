@@ -14,9 +14,9 @@ def check_types():
     elif struct.calcsize('<q') == 4:
         int4f='q'
     else:
-        print 'This architecture has a non-standard integer size'
-        print 'which is not supported in this version. Please, contact the'
-        print 'author to get support for this platform.'
+        print('This architecture has a non-standard integer size')
+        print('which is not supported in this version. Please, contact the')
+        print('author to get support for this platform.')
         sys.exit(1)
 # 64-bit integers
     if struct.calcsize('<i') == 8:
@@ -26,9 +26,9 @@ def check_types():
     elif struct.calcsize('<q') == 8:
         intf='q'
     else:
-        print 'This architecture has a non-standard integer size'
-        print 'which is not supported in this version. Please, contact the'
-        print 'author to get support for this platform.'
+        print('This architecture has a non-standard integer size')
+        print('which is not supported in this version. Please, contact the')
+        print('author to get support for this platform.')
         sys.exit(1)
 # 64-bit floats
     if struct.calcsize('<f') == 8:
@@ -36,9 +36,9 @@ def check_types():
     elif struct.calcsize('<d') == 8:
         flf='d'
     else:
-        print 'This architecture has a non-standard float size'
-        print 'which is not supported in this version. Please, contact the'
-        print 'author to get support for this platform.'
+        print('This architecture has a non-standard float size')
+        print('which is not supported in this version. Please, contact the')
+        print('author to get support for this platform.')
         sys.exit(1)
     return [int4f,intf,flf]
     
@@ -56,7 +56,7 @@ def check_model (filename):
     try:
         f=open(filename,'r')
     except:
-        print 'Could not find model file:',filename
+        print('Could not find model file:',filename)
         return ['inexistent',-1,-1,-1]
     filetype='unknown'
     # Check if it's nicole's binary format
@@ -82,8 +82,8 @@ def check_model (filename):
         f.close()
         filesize=os.path.getsize(filename)
         if filesize != (13*nz+3)*(nx*ny+1)*8:
-            print 'Incorrect size of model file:',filename
-            print 'The file is probably corrupted. Proceeding anyway...'
+            print('Incorrect size of model file:',filename)
+            print('The file is probably corrupted. Proceeding anyway...')
 #            sys.exit(1)
         return [filetype,nx,ny,nz]
     if string == 'nicole2.3bm': # Old format version
@@ -92,8 +92,8 @@ def check_model (filename):
         f.close()
         filesize=os.path.getsize(filename)
         if filesize != (17*nz+3)*(nx*ny+1)*8:
-            print 'Incorrect size of model file:',filename
-            print 'The file is probably corrupted. Proceeding anyway...'
+            print('Incorrect size of model file:',filename)
+            print('The file is probably corrupted. Proceeding anyway...')
 #            sys.exit(1)
         return [filetype,nx,ny,nz]
     if string == 'nicole2.6bm': # Old format version
@@ -102,8 +102,8 @@ def check_model (filename):
         f.close()
         filesize=os.path.getsize(filename)
         if filesize != (22*nz+3+8+92)*(nx*ny+1)*8:
-            print 'Incorrect size of model file:',filename
-            print 'The file is probably corrupted. Proceeding anyway...'
+            print('Incorrect size of model file:',filename)
+            print('The file is probably corrupted. Proceeding anyway...')
 #            sys.exit(1)
         return [filetype,nx,ny,nz]
     if string == 'nicole1804m': # Current format version
@@ -112,8 +112,8 @@ def check_model (filename):
         f.close()
         filesize=os.path.getsize(filename)
         if filesize != (22*nz+13+92)*(nx*ny+1)*8:
-            print 'Incorrect size of model file:',filename
-            print 'The file is probably corrupted. Proceeding anyway...'
+            print('Incorrect size of model file:',filename)
+            print('The file is probably corrupted. Proceeding anyway...')
 #            sys.exit(1)
         return [filetype,nx,ny,nz]
     f.close()
@@ -126,9 +126,9 @@ def check_model (filename):
         filetype='ascii'
         filetype=filetype+line.split()[len(line.split())-1]
         if filetype != 'ascii1.0' and filetype != 'ascii2.3':
-            print 'Model file:',filename
-            print 'seems to be an ASCII file of unsupported format'
-            print line
+            print('Model file:',filename)
+            print('seems to be an ASCII file of unsupported format')
+            print(line)
             sys.exit(1)
         # Count number of model lines
         string=f.read()
@@ -155,9 +155,9 @@ def check_model (filename):
         try:
             import idlsave
         except:
-            print 'Error. Model file is an IDL save file:',filename
-            print 'Python modules IDLSave and Numpy are needed to read this kind of files'
-            print "The modules don't appear to be installed in your system"
+            print('Error. Model file is an IDL save file:',filename)
+            print('Python modules IDLSave and Numpy are needed to read this kind of files')
+            print("The modules don't appear to be installed in your system")
             sys.exit(1)
         idl=idlsave.read(filename,verbose=0)
         shape=idl.t.shape
@@ -180,7 +180,7 @@ def check_model (filename):
             nx=idl.t.shape[2]
         return [filetype,nx,ny,nz]
 #
-    print 'Unknown model file type:'+filename
+    print('Unknown model file type:'+filename)
     sys.exit(1)
 
 def check_prof (filename):
@@ -197,7 +197,7 @@ def check_prof (filename):
     try:
         f=open(filename,'r')
     except:
-        print 'Could not find profile file:',filename
+        print('Could not find profile file:',filename)
         return ['inexistent',-1,-1,-1]
     filetype='unknown'
     if h5py.is_hdf5(filename):
@@ -220,8 +220,8 @@ def check_prof (filename):
         if char in(string.printable) or char in(string.whitespace): 
             nprintable=nprintable+1
     if len(readstr) == 0:
-        print 'Empty file!'
-        print 'filename:',filename
+        print('Empty file!')
+        print('filename:',filename)
         sys.exit(1)
     if float(nprintable)/float(len(readstr)) > .95:
         filetype='ascii'
@@ -250,8 +250,8 @@ def check_prof (filename):
         f.close()
         filesize=os.path.getsize(filename)
         if filesize != (4*nlam)*(nx*ny+1)*8:
-            print 'Incorrect size of profile file:',filename
-            print 'The file is probably corrupted. Proceeding anyway...'
+            print('Incorrect size of profile file:',filename)
+            print('The file is probably corrupted. Proceeding anyway...')
 #            sys.exit(1)
         return [filetype,nx,ny,nlam]
     if readstr == 'nicole2.3bp': # Current format version
@@ -260,8 +260,8 @@ def check_prof (filename):
         f.close()
         filesize=os.path.getsize(filename)
         if filesize != (4*nlam)*(nx*ny+1)*8:
-            print 'Incorrect size of profile file:',filename
-            print 'The file is probably corrupted. Proceeding anyway...'
+            print('Incorrect size of profile file:',filename)
+            print('The file is probably corrupted. Proceeding anyway...')
 #            sys.exit(1)
         return [filetype,nx,ny,nlam]
     f.close()
@@ -277,9 +277,9 @@ def check_prof (filename):
         try:
             import idlsave
         except:
-            print 'Error. Profile file is an IDL save file:',filename
-            print 'Python modules IDLSave and Numpy are needed to read this kind of files'
-            print "The modules don't appear to be installed in your system"
+            print('Error. Profile file is an IDL save file:',filename)
+            print('Python modules IDLSave and Numpy are needed to read this kind of files')
+            print("The modules don't appear to be installed in your system")
             sys.exit(1)
         idl=idlsave.read(filename,verbose=0)
         shape=idl.stki.shape
@@ -302,7 +302,7 @@ def check_prof (filename):
             nx=idl.stki.shape[2]
         return [filetype,nx,ny,nlam]
 #
-    print 'Unknown profile file type:'+filename
+    print('Unknown profile file type:'+filename)
     sys.exit(1)
 
 def read_prof(filename, filetype, nx, ny, nlam, ix, iy, sequential=0):
@@ -322,13 +322,13 @@ def read_prof(filename, filetype, nx, ny, nlam, ix, iy, sequential=0):
 # Read a particular profile from a profile file 
 # Note that ix, iy=0 represents the first profile
     if ix < 0 or iy < 0: 
-        print 'Error in call to read_prof'
+        print('Error in call to read_prof')
         sys.exit(1)
     if filetype == 'ascii':
         if ix != 0 and iy != 0:
-            print 'Error in read_prof'
-            print 'Attempt to read ix,iy different from 0 from ascii file:',filename
-            print 'Requested ix,iy:',ix,iy
+            print('Error in read_prof')
+            print('Attempt to read ix,iy different from 0 from ascii file:',filename)
+            print('Requested ix,iy:',ix,iy)
             sys.exit(1)
         f=open(filename,'r')
         readstr=f.read()
@@ -338,8 +338,8 @@ def read_prof(filename, filetype, nx, ny, nlam, ix, iy, sequential=0):
             lines.remove('')        
         f.close()
         if len(lines) != nlam:
-            print 'Error reading profile file:',filename
-            print 'Incorrect number of wavelengths'
+            print('Error reading profile file:',filename)
+            print('Incorrect number of wavelengths')
             sys.exit(1)
         data=list()
         for l in lines:
@@ -400,7 +400,7 @@ def read_prof(filename, filetype, nx, ny, nlam, ix, iy, sequential=0):
         hf.close()
         return data
     else:
-        print 'Unknown profile file type:'+filetype
+        print('Unknown profile file type:'+filetype)
         sys.exit(1)
 
 def read_model(filename, filetype, nx, ny, nz, ix, iy, sequential=0):
@@ -415,17 +415,18 @@ def read_model(filename, filetype, nx, ny, nz, ix, iy, sequential=0):
     import re
     import sys
     import h5py
+    import numpy as np
     global idl, irec, f # Save values between calls
 
     [int4f,intf,flf]=check_types()
     if ix < 0 or iy < 0: 
-        print 'Error in call to read_model'
+        print('Error in call to read_model')
         sys.exit(1)
     if filetype[0:5] == 'ascii':
         if ix != 0 or iy != 0:
-            print 'Error in read_model'
-            print 'Attempt to read ix,iy different from 0 from ascii file:',filename
-            print 'Requested ix,iy:',ix,iy
+            print('Error in read_model')
+            print('Attempt to read ix,iy different from 0 from ascii file:',filename)
+            print('Requested ix,iy:',ix,iy)
             sys.exit(1)
         f=open(filename,'r')
         readstr=f.read()
@@ -437,8 +438,8 @@ def read_model(filename, filetype, nx, ny, nz, ix, iy, sequential=0):
         f.close()
         l=lines[0].split()
         if len(lines)-1 != nz:
-            print 'Error reading model file:',filename
-            print 'Incorrect number of depth points',nz,len(lines)
+            print('Error reading model file:',filename)
+            print('Incorrect number of depth points',nz,len(lines))
             sys.exit(1)
         vmac=0.
         stray_frac=0.
@@ -536,7 +537,7 @@ def read_model(filename, filetype, nx, ny, nz, ix, iy, sequential=0):
         sizerec=13*nz+3 # Floats (multiply by 8 to convert to bytes)
         f.seek(sizerec*8*(irec+1)) # Skip header and previous records
         data=struct.unpack('<'+str(sizerec)+flf,f.read(sizerec*8))
-        data2=range(22*nz+3+8)
+        data2=list(range(22*nz+3+8))
         data2[0:sizerec]=data[0:sizerec]
         for ind in range(nz):
             data2[6*nz+ind]=data[6*nz+ind] # v_los
@@ -881,19 +882,19 @@ def read_model(filename, filetype, nx, ny, nz, ix, iy, sequential=0):
         for keyword in depth_keywords:
             try:
                 if keyword in ['z', 'tau']:
-                    data += list(float(hf[keyword][()]))
+                    data += list(hf[keyword][()].astype(np.float64))
                 else:
-                    data += list(float(hf[keyword][()][ix][iy]))
+                    data += list(hf[keyword][()][ix][iy].astype(np.float64))
             except Exception:
-                data += list(float(np.zeros(shape=(nz, ))))
+                data += list(np.zeros(shape=(nz, )).astype(np.float64))
 
         for keyword in non_depth_keywords:
             try:
-                data.append(float(hf[keyword][()][ix][iy]))
+                data.append(hf[keyword][()][ix][iy].astype(np.float64))
             except:
                 data.append(float(0))
         hf.close()
         return data
     else:
-        print 'Unknown model file type:'+filetype
+        print('Unknown model file type:'+filetype)
         sys.exit(1)
