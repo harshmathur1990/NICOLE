@@ -213,31 +213,35 @@ def check_prof (filename):
         return return_data
 
     # First check if it's ASCII    
-    readstr=f.read(1000000)
-    f.close()
-    nprintable=0
-    for char in readstr: 
-        if char in(string.printable) or char in(string.whitespace): 
-            nprintable=nprintable+1
-    if len(readstr) == 0:
-        print('Empty file!')
-        print('filename:',filename)
-        sys.exit(1)
-    if float(nprintable)/float(len(readstr)) > .95:
-        filetype='ascii'
-        # Count number of wavelengths
-        f=open(filename,'r')
-        string=f.read()
-        string=re.sub('!.*\n','\n',string)
-        lines=string.rsplit('\n')
-        for l in range(lines.count('')):
-            lines.remove('')
-        nlam=len(lines)
-        #
+    try:
+        readstr=f.read(1000000)
+        nprintable=0
+        for char in readstr: 
+            if char in(string.printable) or char in(string.whitespace): 
+                nprintable=nprintable+1
+        if len(readstr) == 0:
+            print('Empty file!')
+            print('filename:',filename)
+            sys.exit(1)
+        if float(nprintable)/float(len(readstr)) > .95:
+            filetype='ascii'
+            # Count number of wavelengths
+            f=open(filename,'r')
+            string=f.read()
+            string=re.sub('!.*\n','\n',string)
+            lines=string.rsplit('\n')
+            for l in range(lines.count('')):
+                lines.remove('')
+            nlam=len(lines)
+            #
+            f.close()
+            nx=1
+            ny=1
+            return [filetype,nx,ny,nlam]
+    except Exception:
+        pass
+    finally:
         f.close()
-        nx=1
-        ny=1
-        return [filetype,nx,ny,nlam]
     # Check if it's nicole's binary format
     f=open(filename,'rb')
     header=f.read(16+8+8)
