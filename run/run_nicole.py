@@ -1007,8 +1007,8 @@ for icycle in range(int(ncycles)):
         else:
             useorigfilemod=0
             f=open('__inputmodel.bin'+suffix,'wb')
-            f.write(struct.pack('<16s'+int4f+int4f+intf,'nicole1804m     ',nxprof,nyprof,nz)) # First record
-            for i in range(22*nz+13+92-16/8-1-1): f.write(struct.pack('<'+flf,0.)) # Fill record
+            f.write(struct.pack('<16s'+int4f+int4f+intf,'nicole1804m     '.encode('utf-8'),nxprof,nyprof,nz)) # First record
+            for i in range(int(22*nz+13+92-16/8-1-1)): f.write(struct.pack('<'+flf,0.)) # Fill record
             percent=-1
             seq=0
             for ix in range(nxprof):
