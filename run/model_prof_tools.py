@@ -246,6 +246,7 @@ def check_prof (filename):
     f=open(filename,'rb')
     header=f.read(16+8+8)
     [readstr,ny,nlam]=struct.unpack('<16s'+intf+intf,header)
+    readstr = readstr.decode("utf-8")
     readstr=readstr.strip()
     if readstr == 'nicole1.6bp': # Older format version
         filetype='nicole1.6'
