@@ -862,7 +862,7 @@ def read_model(filename, filetype, nx, ny, nz, ix, iy, sequential=0):
         depth_keywords = [
             'z', 'tau', 'temperature',
             'gas_pressure', 'density',
-            'electron_pressure', 'velocity_z',
+            ['electron_pressure', 'electron_density'], 'velocity_z',
             'velocity_turbulent', 'B_z', 'B_x',
             'B_y', 'B_local_x', 'B_local_y', 'B_local_z',
             'velocity_local_x', 'velocity_local_y',
@@ -881,7 +881,13 @@ def read_model(filename, filetype, nx, ny, nz, ix, iy, sequential=0):
         hf = h5py.File(filename, 'r')
         for keyword in depth_keywords:
             try:
-                if keyword in ['z', 'tau']:
+                if isinstance(keyword, list):
+                    for _key in keyword:
+                        if _key in list(hf.keys()):
+                            data += list(hf[_key][()][ix][iy].astype(np.float64))
+                            break
+
+                elif keyword in ['z', 'tau']:
                     data += list(hf[keyword][()].astype(np.float64))
                 else:
                     data += list(hf[keyword][()][ix][iy].astype(np.float64))
