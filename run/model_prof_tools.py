@@ -152,7 +152,7 @@ def check_model (filename):
     stri=struct.unpack('10s',f.read(10))
     stri=stri[0]
     bytes=list()
-    for i in range(len(stri)): bytes.append(ord(stri[i]))
+    for i in range(len(stri)): bytes.append(ord(stri.decode("utf-8")[i]))
     f.close()
     if bytes == [83, 82, 0, 4, 0, 0, 0, 10, 0, 0]:
         filetype='idl'
