@@ -74,6 +74,7 @@ def check_model (filename):
     f=open(filename,'rb')
     header=f.read(16+4+4+8)
     [string,ny,nz]=struct.unpack('<16s'+intf+intf,header)
+    string = string.decode('utf-8')
     string=string.strip()
     if string == 'nicole1.6bm': # Older format version
         filetype='nicole1.6'
@@ -109,6 +110,7 @@ def check_model (filename):
     if string == 'nicole1804m': # Current format version
         filetype='nicole1804'
         [string,nx,ny,nz]=struct.unpack('<16s'+int4f+int4f+intf,header)
+        string = string.decode('utf-8')
         f.close()
         filesize=os.path.getsize(filename)
         if filesize != (22*nz+13+92)*(nx*ny+1)*8:
@@ -256,6 +258,7 @@ def check_prof (filename):
         filetype='nicole1.6'
         nx=1
         [readstr,ny,nlam]=struct.unpack('<16s'+intf+intf,header)
+        readstr = readstr.decode("utf-8")
         f.close()
         filesize=os.path.getsize(filename)
         if filesize != (4*nlam)*(nx*ny+1)*8:
@@ -266,6 +269,7 @@ def check_prof (filename):
     if readstr == 'nicole2.3bp': # Current format version
         filetype='nicole2.3'
         [readstr,nx,ny,nlam]=struct.unpack('<16s'+int4f+int4f+intf,header)
+        readstr = readstr.decode("utf-8")
         f.close()
         filesize=os.path.getsize(filename)
         if filesize != (4*nlam)*(nx*ny+1)*8:
