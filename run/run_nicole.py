@@ -1058,7 +1058,7 @@ for icycle in range(int(ncycles)):
             else:
                 f=open('__strayprof.bin'+suffix,'wb')
                 f.write(struct.pack('<16s'+int4f+int4f+intf,'nicole2.3bp     '.encode('utf-8'),nxprof,nyprof,nlam)) # First record
-                for i in range(nlam*4-16/8-1-1): f.write(struct.pack('<'+flf,0.)) # Fill record
+                for i in range(int(nlam*4-16/8-1-1)): f.write(struct.pack('<'+flf,0.)) # Fill record
                 percent=-1
                 seq=0
                 for ix in range(nxprof):
