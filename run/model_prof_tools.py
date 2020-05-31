@@ -118,31 +118,35 @@ def check_model (filename):
         return [filetype,nx,ny,nz]
     f.close()
     # Check if it's ASCII    
-    f=open(filename,'r')
     line='---'
-    while not re.search('(?i)format version',line) and line != '':
-        line=f.readline()
-    if re.search('(?i)format version',line):
-        filetype='ascii'
-        filetype=filetype+line.split()[len(line.split())-1]
-        if filetype != 'ascii1.0' and filetype != 'ascii2.3':
-            print('Model file:',filename)
-            print('seems to be an ASCII file of unsupported format')
-            print(line)
-            sys.exit(1)
-        # Count number of model lines
-        string=f.read()
-        string=re.sub('!.*\n','\n',string)
-        string=re.sub('(?i).*format version.*\n','\n',string)
-        lines=string.rsplit('\n')
-        for l in range(lines.count('')):
-            lines.remove('')
-        nz=len(lines)-1
-        #
+    f=open(filename,'r')
+    try:
+        while not re.search('(?i)format version',line) and line != '':
+            line=f.readline()
+        if re.search('(?i)format version',line):
+            filetype='ascii'
+            filetype=filetype+line.split()[len(line.split())-1]
+            if filetype != 'ascii1.0' and filetype != 'ascii2.3':
+                print('Model file:',filename)
+                print('seems to be an ASCII file of unsupported format')
+                print(line)
+                sys.exit(1)
+            # Count number of model lines
+            string=f.read()
+            string=re.sub('!.*\n','\n',string)
+            string=re.sub('(?i).*format version.*\n','\n',string)
+            lines=string.rsplit('\n')
+            for l in range(lines.count('')):
+                lines.remove('')
+            nz=len(lines)-1
+            #
+            nx=1
+            ny=1
+            return [filetype,nx,ny,nz]
+    except Exception:
+        pass
+    finally:
         f.close()
-        nx=1
-        ny=1
-        return [filetype,nx,ny,nz]
     # Check if it's an IDL save file
     f=open(filename,'rb')
     stri=struct.unpack('10s',f.read(10))
